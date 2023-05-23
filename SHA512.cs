@@ -22,7 +22,7 @@ namespace HasTest
         {
         }
 
-        public string[] GenerateFromFile(String fileName)
+        public string GenerateFromFile(String fileName)
         {
             FileStream fileStream = File.OpenRead(fileName);
             string resultSHA512 = GenerateSHA512FromFile(fileStream).ToLower();
