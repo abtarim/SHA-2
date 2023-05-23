@@ -10,7 +10,7 @@ namespace HashTest
         {
         }
 
-        public string[] CreateFromFile(String fileName, int pa, int pb)
+        public string CreateFromFile(String fileName, int pa, int pb)
         {
             ulong[] state = new ulong[5];
             FileStream fileStream = File.OpenRead(fileName);
