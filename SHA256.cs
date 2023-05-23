@@ -23,7 +23,7 @@ namespace HashTest
         {
         }
 
-        public string[] GenerateFromFile(String fileName)
+        public string GenerateFromFile(String fileName)
         {
             FileStream fileStream = File.OpenRead(fileName);
             string resultSHA256 = GenerateSHA256FromFile(fileStream).ToLower();
