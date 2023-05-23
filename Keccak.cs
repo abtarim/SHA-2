@@ -13,7 +13,7 @@ namespace HashTest
         {
         }
 
-        public string[] GenerateFromFile(String fileName, int digest, int l, byte padVal)
+        public string GenerateFromFile(String fileName, int digest, int l, byte padVal)
         {
             int w = (int)Math.Pow(2.0, (double)l);
             int c = digest * 2;
