@@ -1,12 +1,8 @@
-﻿using System;
-using System.Diagnostics;
+using System;
 using System.IO;
-using System.Threading;
-using System.Threading.Tasks;
 
-namespace HashTest
+namespace HashFunctions
 {
-
     internal class Keccak
     {
         public Keccak()
@@ -15,22 +11,19 @@ namespace HashTest
 
         public string GenerateFromFile(String fileName, int digest, int l, byte padVal)
         {
-            int w = (int)Math.Pow(2.0, (double)l);
-            int c = digest * 2;
-
             FileStream fileStream = File.OpenRead(fileName);
-            string resultKeccak = KeccakSponge(fileStream, c, w, padVal).ToLower();
+            string result = KeccakSponge(fileStream, digest, l, padVal).ToLower();
             fileStream.Close();
-
-            return resultKeccak;
+            return result;
         }
 
-        private string KeccakSponge(FileStream m, int c, int w, byte padVal)
+        private string KeccakSponge(FileStream m, int digest, int l, byte padVal)
         {
+            int w = (int)Math.Pow(2.0, (double)l);
+            int c = digest * 2;
             int r = 25 * w - c;
             int rByte = r / 8;
             int cByte = c / 8;
-            int l = (int)Math.Log((double)w, 2.0);
             ulong[,] spongeState, blockState;
             int mLastBlockLength = (int)m.Length % rByte;
             string mBlock = "";
@@ -60,6 +53,7 @@ namespace HashTest
 
             // Squeezing
             string z = Squeezing(spongeState, c);
+            
             return z;
         }
 
@@ -94,10 +88,10 @@ namespace HashTest
                     {
                         val += (ulong)p[(5 * y + x) * pLength + z] * (ulong)Math.Pow(2 * pLength, 2 * z);
                     }
-
                     state[x, y] ^= val;
                 }
             }
+            
             return state;
         }
 
@@ -105,7 +99,6 @@ namespace HashTest
         {
             int n = 12 + 2 * l;
             
-
             ulong[] rc = {
                 0x0000000000000001, 0x0000000000008082, 0x800000000000808A, 0x8000000080008000,
                 0x000000000000808B, 0x0000000080000001, 0x8000000080008081, 0x8000000000008009,
@@ -114,7 +107,6 @@ namespace HashTest
                 0x8000000000008002, 0x8000000000000080, 0x000000000000800A, 0x800000008000000A,
                 0x8000000080008081, 0x8000000000008080, 0x0000000080000001, 0x8000000080008008
             };
-
 
             int[,] r = new int[5, 5];
             r[0, 0] = 0;
@@ -153,12 +145,6 @@ namespace HashTest
                 ulong[] c = new ulong[5];
                 ulong[] d = new ulong[5];
                 ulong[,] A = new ulong[5, 5];
-
-                Parallel.For(0, 5, x => 
-                { 
-                
-                });
-
 
                 //  θ step  ----------------------------------------------------------
                 for (int x = 0; x <= 4; x++)
@@ -236,12 +222,10 @@ namespace HashTest
             for (int j = 0; j < t / 16; j++)
                 z += result[i].Substring(result[i].Length - 2 - 2 * j, 2);
 
-
             return z;
         }
 
-
-        private ulong[,] DoXor(ulong[,] state, ulong[,] p)
+        public ulong[,] DoXor(ulong[,] state, ulong[,] p)
         {
             for (int x = 0; x <= 4; x++)
             {
@@ -250,6 +234,7 @@ namespace HashTest
                     p[x, y] = p[x, y] ^ state[x, y];
                 }
             }
+            
             return p;
         }
 
