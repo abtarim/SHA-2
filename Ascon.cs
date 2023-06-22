@@ -1,8 +1,7 @@
-﻿using System;
-using System.Diagnostics;
+using System;
 using System.IO;
 
-namespace HashTest
+namespace HashFunctions
 {
     internal class Ascon
     {
@@ -19,9 +18,9 @@ namespace HashTest
             state = Absorbing(state, fileStream, pa);
             string H = Squeezing(state);
 
-            string resultAscon = H.ToLower();
+            string result = H.ToLower();
             fileStream.Close();
-            return resultAscon;
+            return result;
         }
 
         private ulong[] Initialization(ulong[] state)
@@ -71,10 +70,11 @@ namespace HashTest
                 tempBlock[i] = mBlock[i];
 
             tempBlock[mLastBlockLength] = 128;
+
             return tempBlock;
         }
 
-        private ulong[] Permutation(ulong[] state, int p)
+        private unsafe ulong[] Permutation(ulong[] state, int p)
         {
             for (int i = 0; i < p; i++)
             {
@@ -90,10 +90,11 @@ namespace HashTest
             ulong[] cr = { 0xf0, 0xe1, 0xd2, 0xc3, 0xb4, 0xa5, 0x96, 0x87, 0x78, 0x69, 0x5a, 0x4b };
 
             state[2] ^= cr[i + 12 - p];
+
             return state;
         }
 
-        private unsafe ulong[] SubstitutionLayer(ulong[] x)
+        private ulong[] SubstitutionLayer(ulong[] x)
         {
             ulong[] t = new ulong[5];
 
@@ -153,8 +154,7 @@ namespace HashTest
         {
             return (value >> bits | value << (64 - bits));
         }
-
-
+        
         private string Squeezing(ulong[] state)
         {
             string[] h = new string[4];
