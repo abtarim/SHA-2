@@ -1,9 +1,7 @@
-﻿using System;
-using System.Diagnostics;
+using System;
 using System.IO;
-using System.Text;
 
-namespace HasTest
+namespace HashFunctions
 {
     internal class SHA512
     {
@@ -25,9 +23,9 @@ namespace HasTest
         public string GenerateFromFile(String fileName)
         {
             FileStream fileStream = File.OpenRead(fileName);
-            string resultSHA512 = GenerateSHA512FromFile(fileStream).ToLower();
+            string result = GenerateSHA512FromFile(fileStream).ToLower();
             fileStream.Close();
-            return resultSHA512;
+            return result;
         }
 
         private string GenerateSHA512FromFile(FileStream fs)
@@ -41,7 +39,6 @@ namespace HasTest
             h7 = 0x1f83d9abfb41bd6b;
             h8 = 0x5be0cd19137e2179;
 
-            UTF7Encoding utf = new UTF7Encoding(true);
             byte[] mBlockBytes = new byte[blockByteLength];
             long mlockCount = fs.Length / blockByteLength;
             int lastBlockLength = (int)(fs.Length % blockByteLength);
@@ -90,7 +87,6 @@ namespace HasTest
 
         private void HashComputing(byte[] mBlock)
         {
-
             ulong[] K = {
                             0x428A2F98D728AE22, 0x7137449123EF65CD, 0xB5C0FBCFEC4D3B2F, 0xE9B5DBA58189DBBC,
                             0x3956C25BF348B538, 0x59F111F1B605D019, 0x923F82A4AF194F9B, 0xAB1C5ED5DA6D8118,
@@ -124,7 +120,6 @@ namespace HasTest
             ulong h = h8;
 
             ulong[] w = new ulong[80];
-
 
             for (int n = 0; n <= 79; n++)
             {
