@@ -13,13 +13,12 @@ namespace HashFunctions
         {
             ulong[] state = new ulong[5];
             FileStream fileStream = File.OpenRead(fileName);
-
             state = Initialization(state);
             state = Absorbing(state, fileStream, pa);
             string H = Squeezing(state);
-
             string result = H.ToLower();
             fileStream.Close();
+            
             return result;
         }
 
