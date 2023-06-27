@@ -9,28 +9,28 @@ namespace HashFunctions
         {
         }
 
-        public string CreateFromFile(String fileName, int pa, int pb)
+        public string CreateFromFile(String fileName, int pa, int pb) // pa=12, pb=12
         {
             ulong[] state = new ulong[5];
             FileStream fileStream = File.OpenRead(fileName);
-            state = Initialization(state);
-            state = Absorbing(state, fileStream, pa);
-            string H = Squeezing(state);
+
+            state = Initialization(state, pa);
+            state = Absorbing(state, fileStream, pb);
+            string H = Squeezing(state, pa, pb);
+
             string result = H.ToLower();
             fileStream.Close();
-            
             return result;
         }
 
-        private ulong[] Initialization(ulong[] state)
+        private ulong[] Initialization(ulong[] state, int pa)
         {
-            state[0] = 0x00400c0000000100;
-            Permutation(state, 12);
+            state[0] = 0x00400c0000000100; // Initialisation vector
+            Permutation(state, pa);
 
             return state;
         }
-
-
+        
         private ulong[] Absorbing(ulong[] state, FileStream m, int p)
         {
             int rByte = 8;
@@ -154,15 +154,15 @@ namespace HashFunctions
             return (value >> bits | value << (64 - bits));
         }
         
-        private string Squeezing(ulong[] state)
+        private string Squeezing(ulong[] state, int pa, int pb)
         {
             string[] h = new string[4];
-            state = Permutation(state, 12);
+            state = Permutation(state, pa);
 
             for (int i = 0; i < 4; i++)
             {
                 h[i] = state[0].ToString("X").PadLeft(16, '0');
-                state = Permutation(state, 12);
+                state = Permutation(state, pb);
             }
 
             return h[0] + h[1] + h[2] + h[3];
