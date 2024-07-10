@@ -1,13 +1,10 @@
-﻿using System;
-using System.Diagnostics;
+using System;
 using System.IO;
-using System.Text;
 
-namespace HashTest
+namespace HashFunctions
 {
     internal class SHA256
     {
-        
         private const int blockByteLength = 64, _paddingByteConst = 56;
 
         uint h1;
@@ -23,18 +20,16 @@ namespace HashTest
         {
         }
 
-        public string[] GenerateFromFile(String fileName)
+        public string GenerateFromFile(String fileName)
         {
             FileStream fileStream = File.OpenRead(fileName);
-            string resultSHA256 = GenerateSHA256FromFile(fileStream).ToLower();
-
+            string result = GenerateSHA256FromFile(fileStream).ToLower();
             fileStream.Close();
-            return resultSHA256;
+            return result;
         }
 
         private string GenerateSHA256FromFile(FileStream fS)
         {
-
             h1 = 0x6A09E667;
             h2 = 0xBB67AE85;
             h3 = 0x3C6EF372;
@@ -49,7 +44,6 @@ namespace HashTest
             int lastBlockLength = (int)(fS.Length % blockByteLength);
             byte[] mByteLength = BitConverter.GetBytes(fS.Length * 8);
             BufferedStream bufferedStream = new BufferedStream(fS);
-
 
             for (int i = 0; i <= mBlockCount - 1; i++)
             {
@@ -68,7 +62,7 @@ namespace HashTest
                     mBlockBytes[blockByteLength - (i + 1)] = mByteLength[i];
                 HashComputing(mBlockBytes);
             }
-            else 
+            else
             {
                 mBlockBytes = new byte[blockByteLength];
                 bufferedStream.Read(mBlockBytes, 0, mBlockBytes.Length);
@@ -115,7 +109,6 @@ namespace HashTest
             uint h = h8;
 
             uint[] w = new uint[64];
-
 
             for (int n = 0; n <= 63; n++)
             {
